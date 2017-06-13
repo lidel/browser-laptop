@@ -95,15 +95,6 @@ class Frame extends React.Component {
     windowActions.closeFrame(this.props.frameKey)
   }
 
-  getFrameBraverySettings (props) {
-    props = props || this.props
-    const frameSiteSettings =
-      siteSettings.getSiteSettingsForURL(props.allSiteSettings, props.location)
-    return Immutable.fromJS(siteSettings.activeSettings(frameSiteSettings,
-                                                        appStoreRenderer.state,
-                                                        appConfig))
-  }
-
   isAboutPage () {
     return aboutUrls.get(getBaseUrl(this.props.location))
   }
@@ -116,26 +107,18 @@ class Frame extends React.Component {
     return !this.webview
   }
 
-  runInsecureContent () {
-    const activeSiteSettings = siteSettings.getSiteSettingsForHostPattern(this.props.allSiteSettings, this.origin)
-    return activeSiteSettings === undefined
-      ? false : activeSiteSettings.get('runInsecureContent')
-  }
-
   allowRunningWidevinePlugin (url) {
     if (!this.props.isWidevineEnabled) {
       return false
     }
-    const origin = url ? siteUtil.getOrigin(url) : this.origin
-    if (!origin) {
+    if (!this.props.origin) {
       return false
     }
     // Check for at least one CtP allowed on this origin
     if (!this.props.allSiteSettings) {
       return false
     }
-    const activeSiteSettings = siteSettings.getSiteSettingsForHostPattern(this.props.allSiteSettings, origin)
-    if (activeSiteSettings && typeof activeSiteSettings.get('widevine') === 'number') {
+    if (typeof this.props.widevine === 'number') {
       return true
     }
     return false
@@ -144,29 +127,24 @@ class Frame extends React.Component {
   expireContentSettings (origin) {
     // Expired Flash settings should be deleted when the webview is
     // navigated or closed. Same for NoScript's allow-once option.
-    const activeSiteSettings = siteSettings.getSiteSettingsForHostPattern(this.props.allSiteSettings, origin)
-    if (!activeSiteSettings) {
-      return
-    }
-    if (typeof activeSiteSettings.get('flash') === 'number') {
-      if (activeSiteSettings.get('flash') < Date.now()) {
+    if (typeof this.props.flash === 'number') {
+      if (this.props.flash < Date.now()) {
         appActions.removeSiteSetting(origin, 'flash', this.props.isPrivate)
       }
     }
-    if (activeSiteSettings.get('widevine') === 0) {
+    if (this.props.widevine === 0) {
       appActions.removeSiteSetting(origin, 'widevine', this.props.isPrivate)
     }
-    if (activeSiteSettings.get('noScript') === 0) {
+    if (this.props.noScript === 0) {
       appActions.removeSiteSetting(origin, 'noScript', this.props.isPrivate)
     }
-    const noScriptExceptions = activeSiteSettings.get('noScriptExceptions')
-    if (noScriptExceptions) {
-      appActions.noScriptExceptionsAdded(origin, noScriptExceptions.filter((value, host) => value !== 0))
+    if (this.props.noScriptExceptions) {
+      appActions.noScriptExceptionsAdded(origin, this.props.noScriptExceptions.filter((value, host) => value !== 0))
     }
   }
 
   componentWillUnmount () {
-    this.expireContentSettings(this.origin)
+    this.expireContentSettings(this.props.origin)
   }
 
   updateWebview (cb, prevProps = {}) {
@@ -221,7 +199,7 @@ class Frame extends React.Component {
 
   get zoomLevel () {
     const zoom = this.props.siteZoomLevel
-    appActions.removeSiteSetting(this.origin, 'zoomLevel', this.props.isPrivate)
+    appActions.removeSiteSetting(this.props.origin, 'zoomLevel', this.props.isPrivate)
     return zoom
   }
 
@@ -296,7 +274,7 @@ class Frame extends React.Component {
 
     // For cross-origin navigation, clear temp approvals
     const prevOrigin = siteUtil.getOrigin(prevProps.location)
-    if (this.origin !== prevOrigin) {
+    if (this.props.origin !== prevOrigin) {
       this.expireContentSettings(prevOrigin)
     }
 
@@ -395,13 +373,15 @@ class Frame extends React.Component {
    * @param {function=} widevineCallback - Optional callback to run if Widevine is
    *   accepted
    */
-  showWidevineNotification (location, origin, noWidevineCallback, widevineCallback) {
+  showWidevineNotification (noWidevineCallback, widevineCallback) {
     // https://www.nfl.com is said to be a widevine site but it actually uses Flash for me Oct 10, 2016
     const widevineSites = ['https://www.netflix.com',
       'http://bitmovin.com',
       'https://www.primevideo.com',
       'https://www.spotify.com',
       'https://shaka-player-demo.appspot.com']
+    const origin = this.props.origin
+    const location = this.props.location
     const isForWidevineTest = process.env.NODE_ENV === 'test' && location.endsWith('/drm.html')
     if (!isForWidevineTest && (!origin || !widevineSites.includes(origin))) {
       noWidevineCallback()
@@ -413,7 +393,7 @@ class Frame extends React.Component {
     const nonce = Math.random().toString()
 
     if (this.props.isWidevineEnabled) {
-      const message = locale.translation('allowWidevine').replace(/{{\s*origin\s*}}/, this.origin)
+      const message = locale.translation('allowWidevine').replace(/{{\s*origin\s*}}/, origin)
       // Show Widevine notification bar
       appActions.showNotification({
         buttons: [
@@ -421,7 +401,7 @@ class Frame extends React.Component {
           {text: locale.translation('allow')}
         ],
         message,
-        frameOrigin: this.origin,
+        frameOrigin: origin,
         options: {
           nonce,
           persist: true
@@ -430,16 +410,16 @@ class Frame extends React.Component {
       this.notificationCallbacks[message] = (buttonIndex, persist) => {
         if (buttonIndex === 1) {
           if (persist) {
-            appActions.changeSiteSetting(this.origin, 'widevine', 1)
+            appActions.changeSiteSetting(origin, 'widevine', 1)
           } else {
-            appActions.changeSiteSetting(this.origin, 'widevine', 0)
+            appActions.changeSiteSetting(origin, 'widevine', 0)
           }
           if (widevineCallback) {
             widevineCallback()
           }
         } else {
           if (persist) {
-            appActions.changeSiteSetting(this.origin, 'widevine', false)
+            appActions.changeSiteSetting(origin, 'widevine', false)
           }
         }
         appActions.hideNotification(message)
@@ -621,7 +601,7 @@ class Frame extends React.Component {
       }
       if (e.isMainFrame && !e.isErrorPage && !e.isFrameSrcDoc) {
         if (e.url && e.url.startsWith(appConfig.noScript.twitterRedirectUrl) &&
-          this.getFrameBraverySettings(this.props).get('noScript') === true) {
+          this.props.noScript === true) {
           // This result will be canceled immediately by sitehacks, so don't
           // update the load state; otherwise it will not show the security
           // icon.
@@ -638,7 +618,7 @@ class Frame extends React.Component {
       windowActions.onWebviewLoadEnd(this.frame, url)
       const parsedUrl = urlParse(url)
       if (!this.allowRunningWidevinePlugin()) {
-        this.showWidevineNotification(this.props.location, this.origin, () => {
+        this.showWidevineNotification(() => {
         }, () => {
           appActions.loadURLRequested(this.props.tabId, this.props.provisionalLocation)
         })
@@ -708,7 +688,7 @@ class Frame extends React.Component {
         return
       }
       let isSecure = null
-      let runInsecureContent = this.runInsecureContent()
+      let runInsecureContent = this.props.runInsecureContent
       if (e.securityState === 'secure') {
         isSecure = true
       } else if (e.securityState === 'insecure') {
@@ -779,8 +759,8 @@ class Frame extends React.Component {
     })
     this.webview.addEventListener('did-finish-load', (e) => {
       loadEnd(true, e.validatedURL)
-      if (this.runInsecureContent()) {
-        appActions.removeSiteSetting(this.origin, 'runInsecureContent', this.props.isPrivate)
+      if (this.props.runInsecureContent) {
+        appActions.removeSiteSetting(this.props.origin, 'runInsecureContent', this.props.isPrivate)
       }
     })
     this.webview.addEventListener('did-navigate-in-page', (e) => {
@@ -850,10 +830,6 @@ class Frame extends React.Component {
     this.webview.addEventListener('mousewheel', this.onMouseWheel.bind(this))
   }
 
-  get origin () {
-    return siteUtil.getOrigin(this.props.location)
-  }
-
   onFocus () {
     if (!this.frame.isEmpty()) {
       windowActions.setTabPageIndexByFrame(this.frame)
@@ -905,13 +881,19 @@ class Frame extends React.Component {
   mergeProps (state, ownProps) {
     const currentWindow = state.get('currentWindow')
     const frame = frameStateUtil.getFrameByKey(currentWindow, ownProps.frameKey) || Immutable.Map()
-    const location = frame.get('location')
-    const allSiteSettings = siteSettingsState.getAllSiteSettings(state, frame.get('isPrivate'))
-    const frameSiteSettings = frame.get('location')
-      ? siteSettings.getSiteSettingsForURL(allSiteSettings, frame.get('location'))
-      : undefined
-    const contextMenu = currentWindow.get('contextMenuDetail')
     const tabId = frame.get('tabId')
+
+    const location = frame.get('location')
+    const origin = tabState.getVisibleOrigin(state, tabId)
+    const isPrivate = frame.get('isPrivate', false)
+
+    const allSiteSettings = siteSettingsState.getAllSiteSettings(state, isPrivate)
+    const frameSiteSettings = location
+      ? siteSettings.getSiteSettingsForURL(allSiteSettings, location)
+      : Immutable.Map()
+    const activeSiteSettings = siteSettings.activeSettings(frameSiteSettings, state, appConfig)
+
+    const contextMenu = currentWindow.get('contextMenuDetail')
     const tab = tabId && tabId > -1 && tabState.getByTabId(state, tabId)
 
     const props = {}
@@ -928,6 +910,12 @@ class Frame extends React.Component {
     props.showMessageBox = tab && tab.get('messageBoxDetail')
 
     // used in other functions
+    props.origin = origin
+    props.runInsecureContent = activeSiteSettings.runInsecureContent
+    props.noScript = activeSiteSettings.noScript
+    props.noScriptExceptions = frameSiteSettings && frameSiteSettings.get('noScriptExceptions')
+    props.widevine = activeSiteSettings.widevine
+    props.flash = activeSiteSettings.flash
     props.urlBarFocused = frame && frame.getIn(['navbar', 'urlbar', 'focused'])
     props.isAutFillContextMenu = contextMenu && contextMenu.get('type') === 'autofill'
     props.isSecure = frame.getIn(['security', 'isSecure'])
