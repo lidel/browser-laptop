@@ -29,7 +29,6 @@ let alertText
 describe('MessageBox component tests', function () {
   function * setup (client) {
     yield client
-      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .waitForBrowserWindow()
       .waitForEnabled(urlInput)

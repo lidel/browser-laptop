@@ -9,7 +9,6 @@ const aboutHistoryState = require('../../app/common/state/aboutHistoryState')
 describe('urlBarSuggestions', function () {
   function * setup (client) {
     yield client
-      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)

@@ -12,7 +12,6 @@ const link = '#clickme'
 describe('safebrowsing interception', function () {
   function * setup (client) {
     yield client
-      .changeSetting('tabs.show-dashboard-images', false)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)
   }

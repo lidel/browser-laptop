@@ -11,7 +11,6 @@ const siteSettingsList = require('../../js/data/siteSettingsList')
 describe('Clear Browsing Panel', function () {
   function * setup (client) {
     yield client
-      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)

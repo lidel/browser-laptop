@@ -6,7 +6,6 @@ const {urlInput, braveMenu, braveryPanel, braveryPanelContainer} = require('../l
 describe('navigator component tests', function () {
   function * setup (client) {
     yield client
-      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)

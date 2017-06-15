@@ -9,7 +9,6 @@ describe('about:adblock', function () {
   before(function * () {
     const url = getTargetAboutUrl('about:adblock')
     yield this.app.client
-      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)

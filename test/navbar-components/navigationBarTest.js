@@ -15,7 +15,6 @@ const messages = require('../../js/constants/messages')
 describe('navigationBar tests', function () {
   function * setup (client) {
     yield client
-      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .windowByUrl(Brave.browserWindowUrl)
       .waitForEnabled(urlInput)
