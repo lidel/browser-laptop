@@ -8,6 +8,7 @@ const {urlInput, tabsTabs, pinnedTabsTabs} = require('../lib/selectors')
 describe('pinnedTabs', function () {
   function * setup (client) {
     yield client
+      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)

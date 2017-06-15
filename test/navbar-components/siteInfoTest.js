@@ -10,6 +10,7 @@ const {urlInput, urlbarIcon, siteInfoDialog, viewCertificateButton} = require('.
 describe('siteInfo component tests', function () {
   function * setup (client) {
     yield client
+      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)

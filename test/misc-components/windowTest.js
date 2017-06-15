@@ -10,6 +10,7 @@ describe('application window', function () {
 
     it('opens a window and loads the UI', function * () {
       yield this.app.client
+        .changeSetting('tabs.show-dashboard-images', false)
         .waitForUrl(Brave.newTabUrl)
         .waitForBrowserWindow()
         .windowByIndex(0)
@@ -44,6 +45,7 @@ describe('application window', function () {
 
       before(function * () {
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .waitForUrl(Brave.newTabUrl)
           .waitForBrowserWindow()
           .windowByIndex(0)
@@ -158,6 +160,7 @@ describe('application window', function () {
 
       before(function * () {
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .waitForUrl(Brave.newTabUrl)
           .waitForBrowserWindow()
           .resizeWindow(600, 700)
@@ -206,6 +209,7 @@ describe('application window', function () {
         this.page1 = Brave.server.url('page1.html')
 
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .waitForBrowserWindow()
           .waitForUrl(Brave.newTabUrl)
           .loadUrl(Brave.server.url('window_open.html'))
@@ -327,6 +331,7 @@ describe('application window', function () {
         this.page1 = Brave.server.urlWithIpAddress('page1.html')
 
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .waitForBrowserWindow()
           .waitForUrl(Brave.newTabUrl)
           .loadUrl(this.window_open_page)
@@ -530,6 +535,7 @@ describe('application window', function () {
       this.page1 = Brave.server.urlWithIpAddress('page1.html')
 
       yield this.app.client
+        .changeSetting('tabs.show-dashboard-images', false)
         .waitForUrl(Brave.newTabUrl)
         .waitForBrowserWindow()
         .waitForVisible(activeWebview)
@@ -566,6 +572,7 @@ describe('application window', function () {
         var page1 = Brave.server.url('page1.html')
 
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .waitForUrl(Brave.newTabUrl)
           .waitForBrowserWindow()
           .waitForVisible(activeWebview)
@@ -608,6 +615,7 @@ describe('application window', function () {
         this.page2 = Brave.server.url('page2.html')
 
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .waitForBrowserWindow()
           .waitForUrl(Brave.newTabUrl)
           .loadUrl(this.clickWithTargetPage)
@@ -767,6 +775,7 @@ describe('application window', function () {
       this.page1 = Brave.server.url('close.html')
 
       yield this.app.client
+        .changeSetting('tabs.show-dashboard-images', false)
         .waitForBrowserWindow()
         .waitForUrl(Brave.newTabUrl)
         .loadUrl(this.page1)

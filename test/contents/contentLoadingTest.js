@@ -6,6 +6,7 @@ const {urlInput} = require('../lib/selectors')
 describe('content loading', function () {
   function * setup (client) {
     yield client
+      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)

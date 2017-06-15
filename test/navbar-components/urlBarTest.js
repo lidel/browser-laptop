@@ -9,6 +9,7 @@ const config = require('../../js/constants/config')
 describe('urlBar tests', function () {
   function * setup (client) {
     yield client
+      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .waitForBrowserWindow()
       .waitForEnabled(urlInput)

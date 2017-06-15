@@ -6,6 +6,7 @@ const {notificationBar, urlInput} = require('../lib/selectors')
 describe('flash install interception', function () {
   function * setup (client) {
     yield client
+      .changeSetting('tabs.show-dashboard-images', false)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)
       .changeSetting('security.flash.installed', true)

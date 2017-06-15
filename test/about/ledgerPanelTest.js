@@ -27,6 +27,7 @@ function * setupBrave () {
 
 function * setup (client) {
   yield client
+    .changeSetting('tabs.show-dashboard-images', false)
     .waitForUrl(Brave.newTabUrl)
     .waitForBrowserWindow()
     .waitForVisible(urlInput)

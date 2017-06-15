@@ -9,6 +9,7 @@ describe('about:brave tests', function () {
   before(function * () {
     const url = getTargetAboutUrl('about:brave')
     yield this.app.client
+      .changeSetting('tabs.show-dashboard-images', false)
       .waitForUrl(Brave.newTabUrl)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)

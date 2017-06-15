@@ -9,6 +9,7 @@ describe('errorPage', function () {
 
   beforeEach(function * () {
     yield this.app.client
+      .changeSetting('tabs.show-dashboard-images', false)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)
   })

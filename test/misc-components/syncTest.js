@@ -49,6 +49,7 @@ const checkSiteSetting = function (hostPattern, setting, value) {
 function * setupBrave (client) {
   Brave.addCommands()
   yield client
+    .changeSetting('tabs.show-dashboard-images', false)
     .waitForUrl(Brave.newTabUrl)
     .waitForBrowserWindow()
 }

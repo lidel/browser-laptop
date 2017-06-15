@@ -25,6 +25,7 @@ let translationsCache = null
 
 function setup (client) {
   return client
+    .changeSetting('tabs.show-dashboard-images', false)
     .waitForBrowserWindow()
     .waitForVisible(urlInput)
     .translations().then(function (translations) {

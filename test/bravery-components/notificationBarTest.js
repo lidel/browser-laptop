@@ -8,6 +8,7 @@ const {AUTOPLAY_MEDIA} = require('../../js/constants/settings')
 describe('notificationBar permissions', function () {
   function * setup (client) {
     yield client
+      .changeSetting('tabs.show-dashboard-images', false)
       .waitForBrowserWindow()
       .waitForVisible(urlInput)
       .changeSetting('general.disable-title-mode', false)

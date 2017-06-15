@@ -16,6 +16,7 @@ describe('frame tests', function () {
 
         yield setup(this.app.client)
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .tabByIndex(0)
           .loadUrl(this.url1)
           .windowByUrl(Brave.browserWindowUrl)
@@ -48,6 +49,7 @@ describe('frame tests', function () {
 
         yield setup(this.app.client)
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .windowByUrl(Brave.browserWindowUrl)
           .waitForUrl(Brave.newTabUrl)
           .url(this.clickWithTargetPage)
@@ -92,6 +94,7 @@ describe('frame tests', function () {
 
         yield setup(this.app.client)
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .tabByIndex(0)
           // add some history
           .loadUrl(this.url1)
@@ -121,6 +124,7 @@ describe('frame tests', function () {
         this.url1 = Brave.server.url('page1.html')
         yield setup(this.app.client)
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .waitForExist('.navigationButtonContainer.disabled .backButton')
           .tabByIndex(0)
           // add some history
@@ -151,6 +155,7 @@ describe('frame tests', function () {
 
         yield setup(this.app.client)
         yield this.app.client
+          .changeSetting('tabs.show-dashboard-images', false)
           .tabByIndex(0)
           // add some history
           .loadUrl(this.url1)
@@ -188,6 +193,7 @@ describe('frame tests', function () {
 
       yield setup(this.app.client)
       yield this.app.client
+        .changeSetting('tabs.show-dashboard-images', false)
         .tabByIndex(0)
         .loadUrl(this.url)
         .windowByUrl(Brave.browserWindowUrl)
@@ -225,6 +231,7 @@ describe('frame tests', function () {
 
       yield setup(this.app.client)
       yield this.app.client
+        .changeSetting('tabs.show-dashboard-images', false)
         .tabByIndex(0)
         .loadUrl(this.url)
         .windowByUrl(Brave.browserWindowUrl)
@@ -246,6 +253,7 @@ describe('frame tests', function () {
     before(function * () {
       yield setup(this.app.client)
       yield this.app.client
+        .changeSetting('tabs.show-dashboard-images', false)
         .windowByUrl(Brave.browserWindowUrl)
         .waitForExist('[data-test-id="tab"][data-frame-key="1"]')
     })

@@ -23,6 +23,7 @@ describe('sessionStore', function () {
       yield Brave.startApp()
       yield setup(Brave.app.client)
       yield Brave.app.client
+        .changeSetting('tabs.show-dashboard-images', false)
         .waitForBrowserWindow()
         .onClearBrowsingData({browserHistory: true})
         .waitForUrl(Brave.newTabUrl)
