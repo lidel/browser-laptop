@@ -67,6 +67,11 @@ const updateActiveTab = (state, closeTabId) => {
     }
   }
 
+  // fall back to first tab
+  if (nextTabId === tabState.TAB_ID_NONE) {
+    nextTabId = tabState.get('tabs').first()
+  }
+
   if (nextTabId !== tabState.TAB_ID_NONE) {
     setImmediate(() => {
       tabs.setActive(nextTabId)
