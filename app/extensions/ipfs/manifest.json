@@ -13,7 +13,6 @@
   "background": {
     "scripts": [
       "js/some-other.js",
-      "js/ipfs.min.js",
       "js/main.js"
     ],
     "persistent": true
