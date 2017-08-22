@@ -13,8 +13,10 @@
   "background": {
     "scripts": [
       "js/some-other.js",
+      "js/ipfs.min.js",
       "js/main.js"
     ],
     "persistent": true
-  }
+  },
+  "content_security_policy": "script-src 'self' 'unsafe-eval'"
 }
