@@ -11,11 +11,7 @@
   },
   "offline_enabled": true,
   "background": {
-    "scripts": [
-      "js/some-other.js",
-      "js/ipfs.min.js",
-      "js/main.js"
-    ],
+    "page": "ipfs.html",
     "persistent": true
   },
   "content_security_policy": "script-src 'self' 'unsafe-eval'"
