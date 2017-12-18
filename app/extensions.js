@@ -497,6 +497,10 @@ module.exports.init = () => {
   extensionInfo.setState(config.syncExtensionId, extensionStates.REGISTERED)
   loadExtension(config.syncExtensionId, getExtensionsPath('brave'), generateSyncManifest(), 'unpacked')
 
+  // Enable IPFS
+  extensionInfo.setState('ipfs', extensionStates.REGISTERED)
+  loadExtension('ipfs', getExtensionsPath('ipfs'), undefined, 'component')
+
   if (getSetting(settings.TORRENT_VIEWER_ENABLED)) {
     extensionInfo.setState(config.torrentExtensionId, extensionStates.REGISTERED)
     loadExtension(config.torrentExtensionId, getExtensionsPath('torrent'), generateTorrentManifest(), 'component')
